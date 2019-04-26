@@ -1,15 +1,16 @@
 <template>
   <div class="singer">
-
+      <Listview :data="singer"></Listview>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 
-import {getSingerList} from '../../api/singer'
-import {ERR_OK} from '../../api/config'
+import {getSingerList} from 'api/singer'
+import {ERR_OK} from 'api/config'
 // eslint-disable-next-line standard/object-curly-even-spacing
-import {setSingerId, amendStr } from '../../common/js/singerpinyin'
+import {setSingerId, amendStr } from 'common/js/singerpinyin'
+import Listview from 'base/listview/listview'
 
 const HOT_NAME = '热门'
 const HOT_SINGER_LENGTH = 10
@@ -26,9 +27,9 @@ export default {
     _getSinger () {
       getSingerList().then((res) => {
         if (res.code === ERR_OK) {
-          this.singer = res.singerList.data.singerlist
-          this._normalizeSinger(this.singer)
+          this.singer = this._normalizeSinger(res.singerList.data.singerlist)
         }
+        // console.log(this.singer)
       })
     },
     _normalizeSinger (list) {
@@ -51,7 +52,8 @@ export default {
           map.hot.items.push({
             id: item.id,
             name: item.name,
-            avatar: item.avatar})
+            avatar: item.avatar
+          })
         }
         const key = item.Findex
         if (!map[key]) {
@@ -60,28 +62,31 @@ export default {
             items: []
           }
         }
+        // map数据重构并排序
         map[key].items.push({
           id: item.id,
           name: item.name,
           avatar: item.avatar
         })
-        let hot = []
-        let ret = []
-        for (let key in map) {
-          let val = map[key]
-          if (val.title.match(/[a-zA-z]/)) {
-            ret.push(val)
-          } else if (val.title === HOT_NAME) {
-            hot.push(val)
-          }
-        }
-        ret.sort((a, b) => {
-          return a.title.charCodeAt(0) - b.title.charCodeAt(0)
-        })
-        return hot.concat(ret)
       })
-      console.log(map)
+      let hot = []
+      let ret = []
+      for (let key in map) {
+        let val = map[key]
+        if (val.title.match(/[a-zA-z]/)) {
+          ret.push(val)
+        } else if (val.title === HOT_NAME) {
+          hot.push(val)
+        }
+      }
+      ret.sort((a, b) => {
+        return a.title.charCodeAt(0) - b.title.charCodeAt(0)
+      })
+      return hot.concat(ret)
     }
+  },
+  components: {
+    Listview
   }
 }
 </script>

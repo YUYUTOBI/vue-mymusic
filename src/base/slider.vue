@@ -11,9 +11,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-// eslint-disable-next-line no-unused-vars
 import BScroll from 'better-scroll'
-// eslint-disable-next-line no-unused-vars
 import {addClass} from '../common/js/dom'
 
 export default {
